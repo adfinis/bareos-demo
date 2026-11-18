@@ -1,0 +1,4 @@
+---
+
+bareos_sd_backup_configurations: true
+bareos_sd_install_debug_packages: false

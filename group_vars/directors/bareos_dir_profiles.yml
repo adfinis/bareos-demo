@@ -1,0 +1,34 @@
+---
+
+bareos_dir_profiles:
+  - name: webui-admin
+    jobacl:
+      - "*all*"
+    clientacl:
+      - "*all*"
+    storageacl:
+      - "*all*"
+    scheduleacl:
+      - "*all*"
+    poolacl:
+      - "*all*"
+    commandacl:
+      - "!.bvfs_clear_cache"
+      - "!.exit"
+      - "!.sql"
+      - "!configure"
+      - "!create"
+      - "!purge"
+      - "!prune"
+      - "!sqlquery"
+      - "!umount"
+      - "!unmount"
+      - "*all*"
+    filesetacl:
+      - "*all*"
+    catalogacl:
+      - "*all*"
+    whereacl:
+      - "*all*"
+    pluginoptionsacl:
+      - "*all*"

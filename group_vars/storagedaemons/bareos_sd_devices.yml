@@ -1,0 +1,35 @@
+---
+
+bareos_sd_device: "Device_{{ inventory_hostname }}"
+bareos_sd_device_media_type: File
+bareos_sd_device_count: 64
+bareos_sd_device_mountpoint: /mnt/bareos/backup
+
+bareos_sd_devices:
+  - name: "FileStorage"
+    description:
+      "File device. Director must have the same Name and MediaType."
+    media_type: "File-{{ inventory_hostname }}"
+    archive_device: "/var/lib/bareos/storage"
+    label_media: true
+    random_access: true
+    automatic_mount: true
+    removable_media: false
+    always_open: false
+    maximum_concurrent_jobs: 1
+
+  - name: "{{ bareos_sd_device }}"
+    description:
+      "Storage device on Storage Daemon {{ inventory_hostname }}."
+    media_type: "{{ bareos_sd_device_media_type }}"
+    archive_device: "{{ bareos_sd_device_mountpoint }}"
+    device_type: File
+    maximum_concurrent_jobs: 1
+    maximum_open_volumes: 64
+    always_open: false
+    automatic_mount: true
+    removable_media: false
+    random_access: true
+    label_media: true
+    autochanger: true
+    count: "{{ bareos_sd_device_count }}"

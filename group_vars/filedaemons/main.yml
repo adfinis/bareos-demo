@@ -1,0 +1,22 @@
+---
+# Default backup client configuration for ALL clients (filedaemons).
+
+# /etc/bareos/bareos-fd.d/director/{{ item.name }}.conf
+bareos_fd_directors:
+  - name: "{{ bareos_director }}"
+    address: "{{ bareos_director_address }}"
+    password: "{{ bareos_group_password }}"
+    monitor: false  # has to be disabled so Director has "full" access. See: https://docs.bareos.org/Configuration/FileDaemon.html#config-Fd_Director_Monitor
+    tls_enable: true
+    tls_verify_peer: false  # TLS-PSK does not offer peer verification
+    connection_from_client_to_director: true
+
+bareos_fd_messages:
+  - name: "{{ bareos_message }}"
+    description: "Messages for customer {{ bareos_customer }}"
+
+# /etc/bareos/bareos-fd.d/client/myself.conf
+bareos_fd_heartbeat_interval: 60
+bareos_fd_backup_configuration: true
+bareos_fd_install_debug_packages: false
+bareos_fd_encryption_enable: true

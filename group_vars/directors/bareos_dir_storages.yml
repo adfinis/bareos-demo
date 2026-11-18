@@ -1,0 +1,24 @@
+---
+
+bareos_dir_storages:
+  - name: "Storage_{{ bareos_storage_01_name }}"
+    address: "{{ bareos_storage_01_address }}"
+    password: "{{ bareos_sd_shared_password_01 }}"  # group_vars/shared_director_storage
+    device: "Autochanger_{{ bareos_storage_01_name }}"
+    media_type: File
+    tls_enable: true
+    tls_verify_peer: false
+    maximum_concurrent_jobs: 64
+    auto_changer: false  # this is not a "real" auto changer
+    heartbeat_interval: 60
+
+  - name: "Storage_{{ bareos_storage_02_name }}"
+    address: "{{ bareos_storage_02_address }}"
+    password: "{{ bareos_sd_shared_password_02 }}"  # group_vars/shared_director_storage
+    device: "Autochanger_{{ bareos_storage_02_name }}"
+    media_type: File
+    tls_enable: true
+    tls_verify_peer: false
+    maximum_concurrent_jobs: 64
+    auto_changer: false  # this is not a "real" auto changer
+    heartbeat_interval: 60

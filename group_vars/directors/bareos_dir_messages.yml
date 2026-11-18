@@ -1,0 +1,20 @@
+---
+
+bareos_dir_messages:
+  - name: "Standard"
+    description: "Send relevant messages to the Director."
+    catalog:
+      - all
+      - "!skipped"
+      - "!saved"
+      - "!audit"
+    append:
+      - file: "/var/log/bareos/bareos.log"
+        messages:
+          - all
+          - "!skipped"
+          - "!terminate"
+    console:
+      - all
+      - "!skipped"
+      - "!saved"

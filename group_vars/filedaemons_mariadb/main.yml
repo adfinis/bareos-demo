@@ -1,0 +1,24 @@
+---
+
+bareos_storagedaemon: expert-circle-bobb
+bareos_schedule: Daily0200_Incremental
+
+# use defaults from group_vars/all rather than overwriting them
+bareos_fd_jobs_append: true
+
+bareos_fd_plugins:
+  - mariabackup
+
+# overwrite bareos_fd_jobs to add a secondary job for the database backups
+bareos_fd_jobs:
+  - name: "{{ bareos_job_prefix }}_MariaDB_{{ inventory_hostname }}"
+    client: "{{ inventory_hostname }}"
+    incremental_backup_pool: "{{ bareos_pool_prefix }}_DB_Incremental"
+    pool: "{{ bareos_pool_prefix }}_DB_Incremental"
+    full_backup_pool: "{{ bareos_pool_prefix }}_DB_Full"
+    max_full_interval: 5 days  # makes sure we have a full backup at least every 5 days
+    jobdefs: JobDef_MariaDB_Backup
+    level: Incremental  # level will be overwritten by max_full_interval
+    schedule: "{{ bareos_schedule_mariadb | default(bareos_schedule) }}"
+    storage: "{{ bareos_storage }}"
+    messages: "{{ bareos_message }}"

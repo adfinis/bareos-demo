@@ -1,0 +1,91 @@
+---
+
+bareos_dir_jobdefs:
+
+  # meta JobDef to define standards that are inherited by all JobDefs
+  - name: JobDef_CommonDefaults
+    type: Backup
+    allow_duplicate_jobs: false
+    cancel_queued_duplicates: true
+    cancel_running_duplicates: false
+
+  - name: JobDef_DirectorSelfBackup
+    jobdefs: JobDef_CommonDefaults
+    level: Full
+    fileset: FileSet_Catalog
+    storage: "{{ bareos_storage }}"  # group_vars/filedaemons/bareos_fd_storage.yml
+    messages: Standard
+
+  - name: JobDef_StandardIncremental
+    jobdefs: JobDef_CommonDefaults
+    level: Incremental
+    fileset: FileSet_FullStandard
+
+  - name: JobDef_StandardFull
+    jobdefs: JobDef_CommonDefaults
+    level: Full
+    fileset: FileSet_FullStandard
+
+  - name: JobDef_MariaDB_Backup
+    jobdefs: JobDef_CommonDefaults
+    level: Full
+    fileset: FileSet_MariaDB
+
+  - name: JobDef_PostgreSQL_Backup
+    jobdefs: JobDef_CommonDefaults
+    level: Full
+    fileset: FileSet_PostgreSQL
+
+  - name: JobDef_PostgreSQL_Docker_Backup
+    jobdefs: JobDef_CommonDefaults
+    level: Full
+    fileset: FileSet_PostgreSQL_Docker
+    # script is placed by bareos-fd role
+    client_runbeforejob: >-
+      /usr/local/bin/bareos-psql-docker-dump.sh
+
+  # https://docs.gitlab.com/administration/backup_restore/backup_gitlab
+  - name: JobDef_Gitlab_Backup
+    jobdefs: JobDef_AlwaysIncremental
+    type: Backup  # required, because double-inheritance doesn't seem to work for type
+    fileset: FileSet_FullStandard
+    # will create a backup archive called bareos_gitlab_backup.tar
+    client_runbeforejob: >-
+      /opt/gitlab/bin/gitlab-backup create BACKUP=bareos SKIP=external_diffs,repositories,uploads,builds,artifacts,lfs,terraform_state,ci_secure_files,registry,pages,packages,remote
+
+  - name: JobDef_AlwaysIncremental
+    jobdefs: JobDef_CommonDefaults
+    fileset: FileSet_FullStandard
+    accurate: true  # required so that deleted files won't be kept in the backup copy
+    always_incremental: true
+
+    # keep incremental jobs for this amount of days, before they are consolidated
+    # into a new job in the consolidated pool.
+    always_incremental_job_retention: 30 days
+
+    # makes sure to keep the amount of backup copies before consolidating them.
+    # this is required to avoid that bareos consolidates more backups, while the daily backup jobs are failing.
+    # https://docs.bareos.org/TasksAndConcepts/AlwaysIncrementalBackupScheme.html#how-it-works
+    always_incremental_keep_number: 30
+
+    # leave the full-backups untouched and only consolidate the incremental backups
+    # until the full backup is this old.
+    # this is set to avoid huge daily data transfers on the storage backends during
+    # the consolidation jobs.
+    # https://docs.bareos.org/TasksAndConcepts/AlwaysIncrementalBackupScheme.html#always-incremental-max-full-age
+    always_incremental_max_full_age: 40 days
+
+  - name: JobDef_VirtualFull
+    jobdefs: JobDef_CommonDefaults
+    fileset: SelfTest
+    level: VirtualFull
+    priority: 13  # avoid issues with consolidate jobs
+
+    # to make sure VirtualFull is not taken as base for the next incrementals,
+    # the job type of the copied job is set to "Archive"
+    run_script:
+      console: "update jobid=%i jobtype=A"  # set type to "Archive"
+      runs_on_client: false
+      runs_on_failure: false
+      runs_when: After
+

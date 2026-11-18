@@ -1,0 +1,150 @@
+---
+
+bareos_dir_schedules:
+  - name: WeeklyCycle
+    run:
+      - "Full 1st sun at 21:00"
+      - "Differential 2nd-5th sun at 21:00"
+      - "Incremental mon-sat at 21:00"
+
+  - name: HourlyIncremental
+    description: >-
+      Run an incremental backup every half hour
+    run:
+      - "Level=Incremental hourly at 00:30"
+
+  - name: HourlyDatabase_Incremental
+    description: >-
+      Run an incremental database backup every full hour
+    run:
+      - "Level=Incremental hourly at 00:00"
+
+  - name: Weekend_Full
+    description: >-
+      Weekend full backup, starting on Saturday 0200
+    run:
+      - "Level=Full sat at 02:00"
+
+  ##
+  # Hourly Incremental schedules
+  #
+  - name: Daily0000_Incremental
+    description: Daily at 0000
+    run:
+      - "Level=Incremental mon-sun at 00:00"
+
+  - name: Daily0100_Incremental
+    description: Daily at 0100
+    run:
+      - "Level=Incremental mon-sun at 01:00"
+
+  - name: Daily0200_Incremental
+    description: Daily at 0200
+    run:
+      - "Level=Incremental mon-sun at 02:00"
+
+  - name: Daily0300_Incremental
+    description: Daily at 0300
+    run:
+      - "Level=Incremental mon-sun at 03:00"
+
+  - name: Daily0400_Incremental
+    description: Daily at 0400
+    run:
+      - "Level=Incremental mon-sun at 04:00"
+
+  - name: Daily0500_Incremental
+    description: Daily at 0500
+    run:
+      - "Level=Incremental mon-sun at 05:00"
+
+  - name: Daily0600_Incremental
+    description: Daily at 0600
+    run:
+      - "Level=Incremental mon-sun at 06:00"
+
+  - name: Daily0700_Incremental
+    description: Daily at 0700 
+    run:
+      - "Level=Incremental mon-sun at 07:00"
+
+  - name: Daily0800_Incremental
+    description: Daily at 0800 
+    run:
+      - "Level=Incremental mon-sun at 08:00"
+
+  - name: Daily0900_Incremental
+    description: Daily at 0900 
+    run:
+      - "Level=Incremental mon-sun at 09:00"
+
+  - name: Daily1000_Incremental
+    description: Daily at 1000 
+    run:
+      - "Level=Incremental mon-sun at 10:00"
+
+  - name: Daily1100_Incremental
+    description: Daily at 1100 
+    run:
+      - "Level=Incremental mon-sun at 11:00"
+
+  - name: Daily1200_Incremental
+    description: Daily at 1200 
+    run:
+      - "Level=Incremental mon-sun at 12:00"
+
+  - name: Daily1300_Incremental
+    description: Daily at 1300 
+    run:
+      - "Level=Incremental mon-sun at 13:00"
+
+  - name: Daily1400_Incremental
+    description: Daily at 1400 
+    run:
+      - "Level=Incremental mon-sun at 14:00"
+
+  - name: Daily1500_Incremental
+    description: Daily at 1500 
+    run:
+      - "Level=Incremental mon-sun at 15:00"
+
+  - name: Daily1600_Incremental
+    description: Daily at 1600 
+    run:
+      - "Level=Incremental mon-sun at 16:00"
+
+  - name: Daily1700_Incremental
+    description: Daily at 1700 
+    run:
+      - "Level=Incremental mon-sun at 17:00"
+
+  - name: Daily1800_Incremental
+    description: Daily at 1800 
+    run:
+      - "Level=Incremental mon-sun at 18:00"
+
+  - name: Daily1900_Incremental
+    description: Daily at 1900 
+    run:
+      - "Level=Incremental mon-sun at 19:00"
+
+  - name: Daily2000_Incremental
+    description: Daily at 2000
+    run:
+      - "Level=Incremental mon-sun at 20:00"
+
+  - name: Daily2100_Incremental
+    description: Daily at 2100
+    run:
+      - "Level=Incremental mon-sun at 21:00"
+
+  - name: Daily2200_Incremental
+    description: Daily at 2200
+    run:
+      - "Level=Incremental mon-sun at 22:00"
+
+  - name: Daily2300_Incremental
+    description: Daily at 2300
+    run:
+      - "Level=Incremental mon-sun at 23:00"
+

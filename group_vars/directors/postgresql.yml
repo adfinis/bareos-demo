@@ -1,0 +1,34 @@
+---
+
+bareos_dir_postgresql_settings:
+  # 25% of total memory
+  - name: shared_buffers
+    value: 4GB
+
+  - name: max_connections
+    value: 200
+
+  # total memory * 0.05
+  - name: maintenance_work_mem
+    value: 820MB
+
+  # 50% of total memory
+  - name: effective_cache_size
+    value: 8GB
+
+  # total memory * 0.25 / max_connections
+  - name: work_mem
+    value: 20MB
+
+  # set down autovacuum for more frequent clean-up
+  # https://docs.bareos.org/TasksAndConcepts/CatalogMaintenance.html#compacting-your-postgresql-database
+  - name: autovacuum_vacuum_scale_factor
+    value: 0.02
+
+  # improve database query speed
+  - name: autovacuum_analyze_scale_factor
+    value: 0.02
+
+  # increased value to improve vacuum speed
+  - name: autovacuum_vacuum_cost_limit
+    value: 1000

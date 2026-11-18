@@ -1,0 +1,7 @@
+---
+
+bareos_dir_hostname: "{{ bareos_director_name }}"
+bareos_dir_backup_configurations: true
+bareos_dir_install_debug_packages: false
+bareos_dir_max_concurrent_jobs: 128
+bareos_dir_tls_enable: true

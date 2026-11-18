@@ -1,0 +1,16 @@
+---
+
+# Bareos stock configuration provides only a single FileStorage.
+# File Autochangers provide a simple way to configure a set of identical storage devices
+# that the Director can treat as a single device.
+#
+# From the Bareos consulting: https://gist.github.com/arogge/35c66775b8a00728e57e5728ae9ae1b6
+
+bareos_sd_zfs_autochanger: "Autochanger_ZFS_{{ inventory_hostname }}"
+
+bareos_sd_autochangers:
+  - name: "{{ bareos_sd_zfs_autochanger }}"
+    devices:
+      - "{{ bareos_sd_zfs_device }}"
+    changer_command: ""  # needs to be set but is not required
+    changer_device: "/dev/null"  # needs to be set but is not required

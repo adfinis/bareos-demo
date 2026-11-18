@@ -1,0 +1,97 @@
+---
+
+fileset_fs_types:
+  - btrfs
+  - ext2
+  - ext3
+  - ext4
+  - reiserfs
+  - jfs
+  - vfat
+  - xfs
+  - zfs
+
+fileset_compression: LZ4
+fileset_signature: XXH128
+
+bareos_dir_filesets:
+  - name: FileSet_Catalog
+    description: "Backup the catalog dump and Bareos configuration files."
+    include:
+      files:
+        - /etc/bareos
+        - /var/lib/bareos/bareos.sql
+      options:
+        signature: "{{ fileset_signature }}"
+    exclude:
+      files:
+        - /var/lib/bareos/bareos.sql.*
+
+  - name: FileSet_FullStandard
+    description: "Backup all regular filesystems, determined by filesystem type."
+    ignore_file_set_changes: true  # avoid creating new full backups on every fileset change
+    include:
+      files:
+        - /
+      exclude_dirs_containing: .nobackup
+      options:
+        signature: "{{ fileset_signature }}"
+        one_fs: false
+        fs_types: "{{ fileset_fs_types }}"
+        compression: "{{ fileset_compression }}"
+        hard_links: true
+    exclude:
+      files:
+        - /snap
+        - /var/lib/docker/aufs
+        - /var/lib/docker/builder
+        - /var/lib/docker/containers
+        - /var/lib/docker/devicemapper
+        - /var/lib/docker/image
+        - /var/lib/docker/network
+        - /var/lib/docker/overlay
+        - /var/lib/docker/overlay2
+        - /var/lib/docker/plugins
+        - /var/lib/docker/repositories-aufs
+        - /var/lib/docker/swarm
+        - /var/lib/docker/tmp
+        - /var/lib/docker/trust
+        - /var/lib/lxcfs
+        - /.autofsck
+        - /.journal
+        - /.fsck
+        - "*.bak"
+        - "*~"
+        - ".nfs*"
+
+  - name: FileSet_MariaDB
+    description: >-
+      Backup the MariaDB databases with mariabackup.
+      See:
+      https://docs.bareos.org/TasksAndConcepts/Plugins.html#mariadb-mariabackup-plugin
+    include:
+      files: []
+      options:
+        signature: "{{ fileset_signature }}"
+        compression: "{{ fileset_compression }}"
+      plugin: |+
+        "python3"
+                     ":module_name=bareos-fd-mariabackup"
+                     ":mycnf=/root/.my.cnf"
+
+  - name: FileSet_PostgreSQL
+    description: >-
+      Backup PostgreSQL databases.
+      See:
+      https://docs.bareos.org/TasksAndConcepts/Plugins.html#postgresql-plugin
+    include:
+      files:
+        - /etc/bareos/pg-wal-archive  # symlink to the actual directory which is created by the bareos_fd role
+      options:
+        signature: "{{ fileset_signature }}"
+        compression: "{{ fileset_compression }}"
+      plugin: |+
+        "python3"
+                     ":module_name=bareos-fd-postgresql"
+                     ":db_host=/run/postgresql/"
+                     ":defaults_file=plugin_postgresql_defaults.ini"

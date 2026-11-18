@@ -1,0 +1,30 @@
+---
+
+bareos_dir_pools:
+  - name: Pool_Bareos_AI_Incremental
+    pool_type: Backup
+    label_format: "Bareos/AI_Inc_"
+    storage: "{{ bareos_storage }}"
+    enabled: true
+    maximum_volume_bytes: 0  # don't set a limit to the volume size
+    maximum_volume_jobs: 1  # only use a volume once
+    volume_retention: 360 days  # volumes will be made available again by the consolidation
+    next_pool: "Pool_Bareos_AI_Consolidated"
+
+  - name: Pool_Bareos_AI_Consolidated
+    pool_type: Backup
+    label_format: "Bareos/AI_Con_"
+    storage: "{{ bareos_storage }}"
+    enabled: true
+    maximum_volume_bytes: 0  # don't set a limit to the volume size
+    maximum_volume_jobs: 1  # only use a volume once
+    volume_retention: 360 days  # volumes will be made available again by the consolidation
+
+  - name: Pool_Bareos_Catalog
+    pool_type: Backup
+    storage: "{{ bareos_storage }}"
+    label_format: "Bareos/Catalog_Full_"
+    enabled: true
+    maximum_volume_bytes: 0  # don't set a limit to the volume size
+    maximum_volume_jobs: 1  # only use a volume once
+    volume_retention: 14 days

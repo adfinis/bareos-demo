@@ -1,0 +1,7 @@
+---
+
+# placeholder, is generated dynamically by looping over the filedaemon group
+bareos_dir_clients:
+  - name: "{{ bareos_director_name }}"
+    address: "{{ bareos_director_address }}"
+    password: "{{ bareos_dir_fd_password }}"

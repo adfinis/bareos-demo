@@ -1,0 +1,5 @@
+
+---
+
+bareos_storagedaemon: expert-circle-boba
+bareos_schedule: Daily0300_Incremental

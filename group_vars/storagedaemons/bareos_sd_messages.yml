@@ -1,0 +1,21 @@
+---
+
+bareos_sd_messages:
+  - name: "Standard"
+    description: "Send relevant messages to the Director."
+    director:
+      server: "{{ bareos_director_name }}"
+      messages:
+        - all
+        - "!skipped"
+        - "!restored"
+    append:
+      file: "/var/log/bareos/bareos.log"
+      messages:
+        - all
+        - "!skipped"
+        - "!terminate"
+    console:
+      - all
+      - "!skipped"
+      - "!saved"

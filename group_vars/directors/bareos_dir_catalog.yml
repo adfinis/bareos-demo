@@ -1,0 +1,8 @@
+---
+
+bareos_dir_catalogs:
+  - name: MyCatalog
+    dbname: bareos
+    dbuser: "{{ bareos_dir_db_admin_username }}"  # make sure to use "bareos" for peer auth
+    # password is set, but not actually required for login with bareos user
+    dbpassword: "{{ bareos_dir_db_admin_password }}"

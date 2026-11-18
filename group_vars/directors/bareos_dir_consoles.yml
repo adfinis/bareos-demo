@@ -1,0 +1,14 @@
+---
+
+# TLS has to be disabled for consoles which should be used for the WebUI.
+# The connection between WebUI and Director is local so transport encryption is not required.
+# setting `tls_require` to `false (https://docs.bareos.org/Configuration/Director.html#config-Dir_Console_TlsRequire)
+# does not work, as the WebUI cannot handle the fallback.
+#
+# bconsole will still use TLS-PSK, even when it's disabled in the console resource, so this is not a concern either.
+
+bareos_dir_consoles:
+  - name: "{{ bareos_console_admin_username }}"
+    password: "{{ bareos_console_admin_password }}"
+    profile: admin
+    tls_enable: true

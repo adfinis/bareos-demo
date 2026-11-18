@@ -1,0 +1,56 @@
+---
+bareos_dir_jobs:
+  - name: Job_Bareos_Backup_Director_Catalog
+    description: "Backup the catalog database (after the nightly save)"
+    jobdefs: JobDef_DirectorSelfBackup
+    client: "{{ bareos_director_name }}"
+    level: Full  # only backs up /etc/bareos and /var/lib/bareos/bareos.sql
+    schedule: Daily1400_Incremental
+    storage: "{{ bareos_storage }}"
+    pool: Pool_Bareos_Catalog
+    runbeforejob: "/usr/lib/bareos/scripts/make_catalog_backup MyCatalog"
+    runafterjob: "/usr/lib/bareos/scripts/delete_catalog_backup MyCatalog"
+
+  - name: Job_Bareos_Backup_Director_FS
+    always_incremental: true
+    description: "Backup the Bareos Director"
+    jobdefs: JobDef_AlwaysIncremental
+    client: "{{ bareos_director_name }}"
+    schedule: Daily1400_Incremental
+    storage: "{{ bareos_storage }}"
+    pool: Pool_Bareos_AI_Incremental
+    full_backup_pool: Pool_Bareos_AI_Consolidated
+    messages: Standard
+
+  - name: RestoreFiles
+    description: "Standard Restore template. Only one such job is needed for all standard Jobs/Clients/Storage ..."
+    type: Restore
+    messages: Standard
+    where: "/tmp/bareos-restores"
+
+    # arbitrary values that are required for each job resource
+    client: "{{ bareos_director_name }}"
+    fileset: FileSet_FullStandard
+    storage: "{{ bareos_storage }}"
+    pool: Pool_Bareos_Catalog
+
+  - name: Job_Consolidate_AlwaysIncremental
+    description: >-
+      Consolidates incremental backup jobs into a new full backup, when they are older than the configured age.
+      This job works for all clients that use Always Incremental, without having to define a dedicated job resource per client.
+      For more info check the Always Incremental Concept page  https://docs.bareos.org/TasksAndConcepts/AlwaysIncrementalBackupScheme.html#always-incremental-concept  
+    type: Consolidate
+    accurate: true
+
+    # limit the full consolidate job per day, to spread out the load of consolidating new full-backups
+    # on multiple days. we might have to increase this number when the number of clients using always
+    # incremental gets too high.
+    # https://docs.bareos.org/TasksAndConcepts/AlwaysIncrementalBackupScheme.html#max-full-consolidations
+    max_full_consolidations: 30
+
+    # arbitrary values that are required for each job resource
+    client: "{{ bareos_director_name }}"  # client resource required for job
+    jobdefs: JobDef_DefaultJob  # arbitrary values for required parameters
+    schedule: Daily1600_Incremental
+    storage: "{{ bareos_storage }}"
+    pool: Pool_Bareos_Catalog
